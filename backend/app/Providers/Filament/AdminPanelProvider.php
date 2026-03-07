@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\MarginsByFamilyChart;
+use App\Filament\Widgets\OutdatedPricesAlert;
+use App\Filament\Widgets\ProductsWithoutPricesWidget;
+use App\Filament\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -34,7 +38,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([])
+            ->widgets([
+                OutdatedPricesAlert::class,
+                StatsOverview::class,
+                MarginsByFamilyChart::class,
+                ProductsWithoutPricesWidget::class,
+            ])
             ->middleware([EncryptCookies::class, AddQueuedCookiesToResponse::class, StartSession::class, AuthenticateSession::class, ShareErrorsFromSession::class, VerifyCsrfToken::class, SubstituteBindings::class, DisableBladeIconComponents::class, DispatchServingFilamentEvent::class])
             ->authMiddleware([Authenticate::class]);
     }

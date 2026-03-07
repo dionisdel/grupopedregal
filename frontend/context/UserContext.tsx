@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import api from "@/services/axios-instance";
 
 interface User {
   id: number;
@@ -10,40 +11,40 @@ interface User {
 
 interface UserContextType {
   user: User | null;
-  token: string | null;
-  setUser: (user: User | null) => void;
-  setToken: (token: string | null) => void;
-  logout: () => void;
+  loading: boolean;
+  fetchUser: () => Promise<void>;
+  clearUser: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export function UserProvider({ children }: { children: ReactNode }) {
+export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("token") : null
-  );
+  const [loading, setLoading] = useState(true);
 
-  const logout = () => {
+  const fetchUser = async () => {
+    setLoading(true);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) { setUser(null); return; }
+      const res = await api.get("/user");
+      setUser(res.data);
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearUser = () => {
     setUser(null);
-    setToken(null);
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-    }
+    if (typeof window !== "undefined") localStorage.removeItem("token");
   };
 
-  const handleSetToken = (t: string | null) => {
-    setToken(t);
-    if (typeof window !== "undefined") {
-      if (t) localStorage.setItem("token", t);
-      else localStorage.removeItem("token");
-    }
-  };
+  useEffect(() => { fetchUser(); }, []);
 
   return (
-    <UserContext.Provider
-      value={{ user, token, setUser, setToken: handleSetToken, logout }}
-    >
+    <UserContext.Provider value={{ user, loading, fetchUser, clearUser }}>
       {children}
     </UserContext.Provider>
   );

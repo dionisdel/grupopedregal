@@ -1,99 +1,101 @@
-"use client";
+'use client';
 
-import { manrope } from "@/app/fonts";
-import api from "@/services/axios-instance";
-import { useUser } from "@/context/UserContext";
-import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { authService } from '@/services/auth.service';
 
 export default function LoginPage() {
-  const [data, setData] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const { fetchUser } = useUser();
   const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setData((prev) => ({ ...prev, [name]: value }));
-    setError("");
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setLoading(true);
-    setError("");
+
     try {
-      const res = await api.post("/login", data);
-      const token = res.data.token;
-      if (token) {
-        localStorage.setItem("token", token);
-        await fetchUser();
-        router.push("/app/home");
-      }
-    } catch (err: unknown) {
-      const axiosErr = err as { response?: { data?: { message?: string } } };
-      setError(axiosErr.response?.data?.message || "Credenciales incorrectas");
+      const response = await authService.login({ email, password });
+      
+      // Guardar token en cookie también para el middleware
+      document.cookie = `token=${response.token}; path=/; max-age=86400; SameSite=Lax`;
+      
+      // Redirigir a home
+      window.location.href = '/app/home';
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Credenciales incorrectas');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="h-full min-h-[calc(100vh-80px)] flex items-center justify-center px-5">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center gap-8 py-16 lg:max-w-[466px] w-full m-auto"
-      >
-        <h1 className={`text-[40px] font-semibold text-white ${manrope.className}`}>
-          Acceso
-        </h1>
-
-        <div className="flex flex-col gap-4 w-full bg-white/[0.04] rounded-xl p-5">
-          {/* Email */}
-          <div className="flex items-center gap-2 rounded-xl bg-white/[0.22] border border-[rgba(236,220,146,0.15)] px-3 h-[62px] w-full focus-within:border-[#ECDC92]/50 transition-colors">
-            <input
-              className="w-full bg-transparent outline-none placeholder:text-white/50 text-white/80"
-              placeholder="Email"
-              type="email"
-              name="email"
-              value={data.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* Password */}
-          <div className="flex items-center gap-2 rounded-xl bg-white/[0.22] border border-[rgba(236,220,146,0.15)] px-3 h-[62px] w-full focus-within:border-[#ECDC92]/50 transition-colors">
-            <input
-              className="w-full bg-transparent outline-none placeholder:text-white/50 text-white/80"
-              placeholder="Contraseña"
-              type="password"
-              name="password"
-              value={data.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
-          )}
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading || !data.email || !data.password}
-            className="flex items-center justify-center w-full rounded-[9px] cursor-pointer hover:opacity-90 py-4 bg-primary disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
-          >
-            {loading ? (
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <span className="text-[16px] font-semibold text-white">Iniciar Sesión</span>
-            )}
-          </button>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-2xl">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Tony App
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Inicia sesión para continuar
+          </p>
         </div>
-      </form>
+        
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="rounded-md bg-red-50 p-4">
+              <div className="text-sm text-red-800">{error}</div>
+            </div>
+          )}
+          
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

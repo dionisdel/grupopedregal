@@ -2,9 +2,6 @@
 
 namespace App\Filament\Resources\ProductPrices\Tables;
 
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -68,14 +65,6 @@ class ProductPricesTable
                         1 => 'Activo',
                         0 => 'Inactivo',
                     ]),
-            ])
-            ->actions([
-                EditAction::make(),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ])
             ->defaultSort('producto.nombre', 'asc');
     }

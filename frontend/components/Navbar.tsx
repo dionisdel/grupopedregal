@@ -34,9 +34,14 @@ const Navbar = () => {
 
           {/* Desktop nav */}
           <div className="lg:flex hidden gap-8 text-[15px] text-white/90">
-            <Link href={user ? "/app/home" : "/"} className={isActive("/app") ? "text-yellow-300" : ""}>
+            <Link href={user ? "/app/home" : "/"} className={isActive("/app/home") ? "text-yellow-300" : ""}>
               Inicio
             </Link>
+            {user && (
+              <Link href="/app/tarifas" className={isActive("/app/tarifas") ? "text-yellow-300" : ""}>
+                Tarifas
+              </Link>
+            )}
           </div>
 
           <div className="lg:flex hidden gap-2.5" suppressHydrationWarning>
@@ -100,6 +105,9 @@ const Navbar = () => {
         </div>
         <nav className="flex flex-col gap-6 px-6 py-8 text-white text-[16px]">
           <Link onClick={() => setOpen(false)} href={user ? "/app/home" : "/"}>Inicio</Link>
+          {user && (
+            <Link onClick={() => setOpen(false)} href="/app/tarifas">Tarifas</Link>
+          )}
           <div className="pt-6 border-t border-white/10 flex flex-col gap-4" suppressHydrationWarning>
             {user ? (
               <button onClick={handleLogout} className="bg-primary rounded-lg py-3 text-center font-bold text-white w-full">

@@ -26,11 +26,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      if (!token) { setUser(null); return; }
-      const res = await api.get("/user");
+      if (!token) { 
+        setUser(null); 
+        setLoading(false);
+        return; 
+      }
+      const res = await api.get("/api/user");
       setUser(res.data);
-    } catch {
+    } catch (error) {
+      console.error('Error fetching user:', error);
       setUser(null);
+      // Limpiar token si hay error de autenticación
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
     } finally {
       setLoading(false);
     }
@@ -38,7 +48,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   const clearUser = () => {
     setUser(null);
-    if (typeof window !== "undefined") localStorage.removeItem("token");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
   };
 
   useEffect(() => { fetchUser(); }, []);

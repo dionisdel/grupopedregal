@@ -4,10 +4,9 @@ import Navbar from "@/components/Navbar";
 
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <AuthGuard />
+    <AuthGuard>
       <Navbar />
       {children}
-    </>
+    </AuthGuard>
   );
 }

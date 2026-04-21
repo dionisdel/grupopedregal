@@ -1,11 +1,11 @@
 import "../globals.css";
 import AuthGuard from "@/components/AuthGuard";
-import Navbar from "@/components/Navbar";
+import CorporateNavbar from "@/components/CorporateNavbar";
 
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
     <AuthGuard>
-      <Navbar />
+      <CorporateNavbar />
       {children}
     </AuthGuard>
   );

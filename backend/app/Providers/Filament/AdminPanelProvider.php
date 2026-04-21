@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Widgets\MarginsByFamilyChart;
 use App\Filament\Widgets\OutdatedPricesAlert;
+use App\Filament\Widgets\PortalDashboard;
 use App\Filament\Widgets\ProductsWithoutPricesWidget;
 use App\Filament\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
@@ -39,6 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                PortalDashboard::class,
                 OutdatedPricesAlert::class,
                 StatsOverview::class,
                 MarginsByFamilyChart::class,

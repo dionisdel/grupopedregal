@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { tarifasService, type Product, type CustomerType, type Category, type Brand, type TarifasFilters } from '@/services/tarifas.service';
-import { Download, Search, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
+import { Download, Search, ChevronUp, ChevronDown, ChevronsUpDown, FileText } from 'lucide-react';
 
 type SortField = 'sku' | 'nombre' | 'categoria' | 'marca' | 'precio';
 type SortOrder = 'asc' | 'desc';
@@ -19,6 +19,10 @@ export default function TarifasPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [showDossierModal, setShowDossierModal] = useState(false);
+  const [dossierTipo1, setDossierTipo1] = useState<number | ''>('');
+  const [dossierTipo2, setDossierTipo2] = useState<number | ''>('');
+  const [generatingDossier, setGeneratingDossier] = useState(false);
 
   const [filters, setFilters] = useState<TarifasFilters>({
     search: '',
@@ -83,6 +87,30 @@ export default function TarifasPage() {
       document.body.removeChild(a);
     } catch (error) {
       console.error('Error exporting:', error);
+    }
+  };
+
+  const handleGenerateDossier = async () => {
+    if (!dossierTipo1) return;
+    setGeneratingDossier(true);
+    try {
+      const blob = await tarifasService.generateDossier(
+        Number(dossierTipo1),
+        dossierTipo2 ? Number(dossierTipo2) : undefined
+      );
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `DOSSIER_TARIFA_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setShowDossierModal(false);
+    } catch (error) {
+      console.error('Error generating dossier:', error);
+    } finally {
+      setGeneratingDossier(false);
     }
   };
 
@@ -264,6 +292,13 @@ export default function TarifasPage() {
                 <Download size={15} />
                 Exportar Excel
               </button>
+              <button
+                onClick={() => { setDossierTipo1(''); setDossierTipo2(''); setShowDossierModal(true); }}
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors"
+              >
+                <FileText size={15} />
+                Dossier PDF
+              </button>
             </div>
           </div>
 
@@ -363,6 +398,58 @@ export default function TarifasPage() {
           )}
         </div>
       </div>
+
+      {/* Modal Dossier */}
+      {showDossierModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowDossierModal(false)}>
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Generar Dossier PDF</h3>
+            <p className="text-sm text-gray-500 mb-4">Selecciona el tipo de cliente para generar el dossier de tarifas. Opcionalmente puedes añadir un segundo tipo para un dossier con dos columnas de precios.</p>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Tipo de cliente (obligatorio)</label>
+                <select
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  value={dossierTipo1}
+                  onChange={e => setDossierTipo1(e.target.value ? Number(e.target.value) : '')}
+                >
+                  <option value="">Seleccionar...</option>
+                  {customerTypes.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Segundo tipo (opcional, para 2 columnas)</label>
+                <select
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  value={dossierTipo2}
+                  onChange={e => setDossierTipo2(e.target.value ? Number(e.target.value) : '')}
+                >
+                  <option value="">Ninguno (1 columna)</option>
+                  {customerTypes.filter(t => t.id !== dossierTipo1).map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowDossierModal(false)}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleGenerateDossier}
+                disabled={!dossierTipo1 || generatingDossier}
+                className="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                <FileText size={15} />
+                {generatingDossier ? 'Generando...' : 'Generar PDF'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

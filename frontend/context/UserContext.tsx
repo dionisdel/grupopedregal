@@ -3,10 +3,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import api from "@/services/axios-instance";
 
+interface UserRole {
+  id: number;
+  name: string;
+  slug: string;
+  permissions?: string[];
+}
+
 interface User {
   id: number;
   name: string;
   email: string;
+  role?: UserRole | null;
 }
 
 interface UserContextType {

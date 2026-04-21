@@ -41,8 +41,12 @@ class ProductsTable
                 IconColumn::make('activo')
                     ->boolean(),
                 IconColumn::make('visible_web')
+                    ->label('Web')
                     ->boolean()
                     ->toggleable(),
+                IconColumn::make('destacado')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

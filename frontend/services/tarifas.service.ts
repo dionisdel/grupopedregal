@@ -84,4 +84,14 @@ export const tarifasService = {
     const response = await axios.get<Brand[]>('/api/tarifas/brands');
     return response.data;
   },
+
+  async generateDossier(tipoClienteId: number, tipoClienteId2?: number): Promise<Blob> {
+    const params: Record<string, any> = { tipo_cliente_id: tipoClienteId };
+    if (tipoClienteId2) params.tipo_cliente_id_2 = tipoClienteId2;
+    const response = await axios.get('/api/tarifas/dossier', {
+      params,
+      responseType: 'blob',
+    });
+    return response.data;
+  },
 };

@@ -41,10 +41,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       }
       const res = await api.get("/api/user");
       setUser(res.data);
-    } catch (error) {
-      console.error('Error fetching user:', error);
+    } catch {
       setUser(null);
-      // Limpiar token si hay error de autenticación
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");
         localStorage.removeItem("user");

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Package, Calculator, FileText, Search, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import api from "@/services/axios-instance";
 
 // --- Types ---
@@ -164,24 +165,28 @@ const capabilities = [
     title: "Explorar productos",
     description:
       "Navega por nuestro catálogo completo con filtros por categoría, marca y proveedor para encontrar exactamente lo que necesitas.",
+    href: "/productos",
   },
   {
     icon: Package,
     title: "Consultar precios",
     description:
       "Consulta precios PVP actualizados de todos nuestros productos. Clientes registrados acceden a precios personalizados por tarifa.",
+    href: "/productos",
   },
   {
     icon: Calculator,
     title: "Calcular materiales",
     description:
       "Introduce los m² de tu obra y calcula automáticamente las cantidades de materiales necesarios con porcentaje de merma configurable.",
+    href: "/productos",
   },
   {
     icon: FileText,
     title: "Generar presupuestos",
     description:
       "Genera presupuestos detallados en PDF con desglose de materiales, cantidades, precios y totales. Envíalos por email directamente.",
+    href: "/productos",
   },
 ];
 
@@ -199,23 +204,27 @@ function PortalDescription() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {capabilities.map((cap) => (
-            <div
+            <Link
               key={cap.title}
-              className="flex flex-col items-center text-center p-6 rounded-xl bg-[#F5F5F5] hover:shadow-sm transition-shadow"
+              href={cap.href}
+              className="group flex flex-col items-center text-center p-6 rounded-xl bg-[#F5F5F5] hover:shadow-md hover:bg-white hover:border-[#E8751A]/30 border border-transparent transition-all duration-200 cursor-pointer"
             >
               <div
-                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
                 style={{ backgroundColor: "#E8751A" }}
               >
                 <cap.icon size={24} className="text-white" />
               </div>
-              <h3 className="text-[#333333] font-semibold text-base mb-2">
+              <h3 className="text-[#333333] font-semibold text-base mb-2 group-hover:text-[#E8751A] transition-colors">
                 {cap.title}
               </h3>
               <p className="text-gray-500 text-sm leading-relaxed">
                 {cap.description}
               </p>
-            </div>
+              <span className="mt-3 text-[#E8751A] text-sm font-medium inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                Ir <ArrowRight size={14} />
+              </span>
+            </Link>
           ))}
         </div>
       </div>

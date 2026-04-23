@@ -19,7 +19,7 @@ class PermissionResource extends Resource
     protected static ?string $navigationLabel = 'Permisos';
     protected static ?string $modelLabel = 'Permiso';
     protected static ?string $pluralModelLabel = 'Permisos';
-    protected static ?string $navigationGroup = 'Seguridad';
+    protected static string|\UnitEnum|null $navigationGroup = 'Seguridad';
     protected static ?int $navigationSort = 51;
     protected static ?string $recordTitleAttribute = 'name';
 

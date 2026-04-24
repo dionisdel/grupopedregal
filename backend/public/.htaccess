@@ -3,6 +3,9 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    # Serve index.html before index.php for the frontend SPA
+    DirectoryIndex index.html index.php
+
     RewriteEngine On
 
     # Handle Authorization Header

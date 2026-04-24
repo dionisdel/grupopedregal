@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@next/swc-win32-x64-msvc": "^16.1.6",
     "axios": "^1.13.6",
     "caniuse-lite": "^1.0.30001777",
     "framer-motion": "^12.35.0",

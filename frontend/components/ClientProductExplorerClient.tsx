@@ -441,7 +441,7 @@ export default function ClientProductExplorerPage() {
 
   const handleProductClick = useCallback(
     (slug: string) => {
-      router.push(`/app/productos/${slug}`);
+      router.push(`/app/productos/detalle?slug=${slug}`);
     },
     [router]
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Package, Weight, Ruler, Layers, Box, Grid3X3, Save, Loader2, CheckCircle } from "lucide-react";
 import {
   catalogService,
@@ -95,9 +95,9 @@ function ErrorState({ message, onBack }: { message: string; onBack: () => void }
 // ─── Main page component ───
 
 export default function ClientProductDetailPage() {
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const slug = searchParams.get("slug") ?? "";
 
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);

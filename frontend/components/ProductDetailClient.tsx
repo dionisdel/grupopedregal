@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Package, Weight, Ruler, Layers, Box, Grid3X3 } from "lucide-react";
 import {
   catalogService,
@@ -36,9 +36,9 @@ function DetailSkeleton() {
 }
 
 export default function ProductDetailClient() {
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const slug = searchParams.get("slug") ?? "";
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

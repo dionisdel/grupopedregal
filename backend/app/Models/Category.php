@@ -10,25 +10,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Category extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'parent_id',
-        'codigo',
         'nombre',
         'slug',
         'descripcion',
-        'descripcion_web',
-        'imagen_url',
+        'imagen_banner_url',
+        'imagen_thumbnail_url',
         'orden',
-        'nivel',
-        'cuenta_contable_compra',
-        'cuenta_contable_venta',
         'activo',
     ];
 
     protected $casts = [
-        'nivel' => 'integer',
-        'orden' => 'integer',
         'activo' => 'boolean',
+        'orden' => 'integer',
     ];
 
     public function parent(): BelongsTo
@@ -38,10 +34,10 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id')->orderBy('orden');
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
-    public function productos(): HasMany
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'categoria_id');
     }

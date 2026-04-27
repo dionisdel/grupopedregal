@@ -21,7 +21,7 @@ class Brand extends Model
         'activo' => 'boolean',
     ];
 
-    public function productos(): HasMany
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'marca_id');
     }

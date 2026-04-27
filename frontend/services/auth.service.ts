@@ -22,7 +22,21 @@ export interface LoginResponse {
   token: string;
 }
 
+export interface RegisterData {
+  nombre: string;
+  email: string;
+  telefono: string;
+  empresa: string;
+  nif_cif: string;
+  password: string;
+}
+
 export const authService = {
+  async register(data: RegisterData): Promise<{ message: string }> {
+    const response = await axios.post<{ message: string }>('/api/register', data);
+    return response.data;
+  },
+
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await axios.post<LoginResponse>('/api/login', credentials);
     

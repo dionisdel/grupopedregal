@@ -11,25 +11,18 @@ class CustomerType extends Model
     use HasFactory;
 
     protected $fillable = [
-        'codigo',
         'nombre',
-        'descripcion',
-        'orden',
+        'slug',
+        'discount_field',
         'activo',
     ];
 
     protected $casts = [
-        'orden' => 'integer',
         'activo' => 'boolean',
     ];
 
-    public function clientes(): HasMany
+    public function customers(): HasMany
     {
-        return $this->hasMany(Customer::class, 'tipo_cliente_id');
-    }
-
-    public function precios(): HasMany
-    {
-        return $this->hasMany(ProductPrice::class, 'tipo_cliente_id');
+        return $this->hasMany(Customer::class);
     }
 }

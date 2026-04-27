@@ -16,14 +16,12 @@ class CategoryFactory extends Factory
 
         return [
             'parent_id' => null,
-            'codigo' => $this->faker->unique()->bothify('CAT-###'),
             'nombre' => $nombre,
-            'slug' => Str::slug($nombre),
+            'slug' => Str::slug($nombre) . '-' . $this->faker->unique()->randomNumber(4),
             'descripcion' => $this->faker->sentence(),
-            'descripcion_web' => $this->faker->sentence(),
-            'imagen_url' => $this->faker->optional()->imageUrl(),
+            'imagen_banner_url' => null,
+            'imagen_thumbnail_url' => null,
             'orden' => $this->faker->numberBetween(1, 100),
-            'nivel' => 1,
             'activo' => true,
         ];
     }
@@ -31,10 +29,5 @@ class CategoryFactory extends Factory
     public function inactive(): static
     {
         return $this->state(fn () => ['activo' => false]);
-    }
-
-    public function level(int $nivel): static
-    {
-        return $this->state(fn () => ['nivel' => $nivel]);
     }
 }

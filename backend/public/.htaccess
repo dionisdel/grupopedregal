@@ -19,12 +19,13 @@
     # API routes → Laravel
     RewriteRule ^api/ index.php [L]
 
-    # Admin panel → Laravel
-    RewriteRule ^admin index.php [L]
-    RewriteRule ^livewire index.php [L]
-
     # Sanctum CSRF → Laravel
     RewriteRule ^sanctum/ index.php [L]
+
+    # Filament admin panel → Laravel (but NOT /admin/productos which is frontend)
+    RewriteRule ^admin/productos - [L]
+    RewriteRule ^admin index.php [L]
+    RewriteRule ^livewire index.php [L]
 
     # If the file or directory exists, serve it directly (static assets, _next, etc.)
     RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -34,6 +35,12 @@
     # Frontend SPA: if a matching directory with index.html exists, serve it
     RewriteCond %{REQUEST_FILENAME}/index.html -f
     RewriteRule ^ %{REQUEST_URI}/index.html [L]
+
+    # SPA catch-all routes: serve the parent page's index.html
+    RewriteRule ^categorias/.* categorias/index.html [L]
+    RewriteRule ^productos/.* productos/detalle/index.html [L]
+    RewriteRule ^admin/productos/.* admin/productos/index.html [L]
+    RewriteRule ^carrito/.* carrito/index.html [L]
 
     # Fallback: serve the frontend index.html for all other routes
     RewriteRule ^ index.html [L]

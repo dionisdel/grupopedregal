@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\Quote;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -16,7 +15,7 @@ class PortalDashboard extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Productos visibles en web', Product::where('visible_web', true)->count())
+            Stat::make('Productos visibles en web', Product::where('estado_publicado', true)->count())
                 ->description('Productos publicados en el portal')
                 ->descriptionIcon('heroicon-m-globe-alt')
                 ->color('success'),
@@ -31,9 +30,9 @@ class PortalDashboard extends BaseWidget
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning'),
 
-            Stat::make('Presupuestos generados', Quote::count())
-                ->description('Total de presupuestos en el sistema')
-                ->descriptionIcon('heroicon-m-document-text')
+            Stat::make('Productos totales', Product::count())
+                ->description('Total de productos en el catálogo')
+                ->descriptionIcon('heroicon-m-cube')
                 ->color('primary'),
         ];
     }

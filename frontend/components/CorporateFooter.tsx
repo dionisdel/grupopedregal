@@ -31,7 +31,7 @@ const businessLines = [
 
 const quickLinks = [
   { label: "Inicio", href: "/" },
-  { label: "Productos", href: "/productos" },
+  { label: "Productos", href: "/categorias" },
   { label: "Contacto", href: "/contacto" },
   { label: "Área de Cliente", href: "/login" },
 ];

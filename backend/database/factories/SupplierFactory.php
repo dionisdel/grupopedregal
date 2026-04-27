@@ -14,7 +14,6 @@ class SupplierFactory extends Factory
         return [
             'codigo' => $this->faker->unique()->bothify('SUP-###'),
             'nombre_comercial' => $this->faker->company(),
-            'razon_social' => $this->faker->company(),
             'nif_cif' => $this->faker->unique()->bothify('B########'),
             'activo' => true,
         ];

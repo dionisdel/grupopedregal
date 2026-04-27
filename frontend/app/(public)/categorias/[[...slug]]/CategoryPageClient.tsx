@@ -39,8 +39,12 @@ function CategoryCircleCard({ category, basePath }: { category: CategoryNode; ba
 
 export default function CategoryPageClient({ params }: { params: Promise<{ slug?: string[] }> }) {
   const pathname = usePathname();
-  // Extract slug from pathname: /categorias/a/b/c → ['a', 'b', 'c']
-  const slugArray = pathname
+  // Extract slug from pathname, handling both local and production paths
+  // Local: /categorias/a/b/c → ['a', 'b', 'c']
+  // Production: /backend/public/categorias/a/b/c → ['a', 'b', 'c']
+  const catIndex = pathname.indexOf('/categorias');
+  const catPath = catIndex >= 0 ? pathname.substring(catIndex) : pathname;
+  const slugArray = catPath
     .replace(/^\/categorias\/?/, '')
     .split('/')
     .filter(Boolean);
